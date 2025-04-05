@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Mediscope - Home</title>
+</head>
+<body class="bg-gradient-to-br from-teal-600 to-green-400 min-h-screen font-sans">
+  
+  <!-- Header -->
+  <header class="bg-white py-6 shadow-md flex justify-between items-center px-8">
+    <a href="/users/profile" class="text-gray-800 text-2xl">
+      <i class="ph ph-user"></i>
+    </a>
+    <h1 class="text-4xl font-bold text-gray-800 tracking-wide">Mediscope</h1>
+    <a href="/users/logoutuser" class="text-gray-700 font-semibold">Logout</a>
+  </header>
+  <!-- Profile Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+
+    <!-- Profile Image -->
+    <div class="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
+      <svg class="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+
+    <section class="text-center mb-16">
+      <h2 class="text-5xl font-extrabold text-white leading-tight">Welcome, <%= user.fullname %></h2>
+      <p class="text-xl text-gray-200 mt-4">Manage and view your health records</p>
+    </section>
+
+  <!-- Main Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+    
+    <h2 class="text-5xl font-extrabold text-white leading-tight">Health Dashboard</h2>
+    
+    <!-- Latest Readings -->
+    
+    <div class="mt-8 w-full max-w-lg">
+      <% if (user.readings.length > 0) { 
+        let latestReading = user.readings[user.readings.length - 1]; 
+   %>
+     <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+       <h3 class="text-gray-800 text-center font-semibold mb-2">Latest Readings</h3>
+       <p class="text-lg font-medium text-gray-700">Heart Rate: 
+         <span class="text-green-600"><%= latestReading.heartrate %></span>
+       </p>
+       <p class="text-lg font-medium text-gray-700">Oxygen Saturation: 
+         <span class="text-green-600"><%= latestReading.spo2 %></span>
+       </p>
+       <p class="text-lg font-medium text-gray-700">Temperature: 
+         <span class="text-green-600"><%= latestReading.temperature %>&deg;C</span>
+       </p>
+       <p class="text-lg font-medium text-gray-700">ECG: 
+      </p>
+       <p class="text-sm text-gray-500 mt-2">Recorded on: <%= latestReading.created_at %></p>
+       <div class="bg-white p-6 rounded-lg shadow-lg mb-6 w-full max-w-lg">
+        <h3 class="text-gray-800 text-center font-semibold mb-2">ECG Graph</h3>
+        <div class="relative w-full h-[300px]">
+            <canvas id="ecgChart"></canvas>
+        </div>
+     </div>
+   <% } else { %>
+     <p class="text-center text-gray-500">No readings available.</p>
+   <% } %>
+   
+      
+    </div>
+   
+  
+      <br>
+    
+    <!-- Previous Readings -->
+    <div class="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
+      <h3 class="text-gray-800 text-center font-semibold mb-4">Previous Readings</h3>
+      <ul class="text-gray-700">
+        <% if (user.readings.length === 0) { %>
+          <p class="text-gray-500 text-center">No previous readings available.</p>
+        <% } else { %>
+          <% user.readings.slice(0, -1).reverse().forEach(reading => { %>
+            <li class="border-b py-2">
+                <p>Heart Rate: <span class="text-green-600"><%= reading.heartrate %> bpm</span></p>
+                <p>Oxygen: <span class="text-green-600"><%= reading.spo2 %>%</span></p>
+                <p>Temperature: <span class="text-green-600"><%= reading.temperature %>&deg;C</span></p>
+                <p>ECG: <%= reading.ecg ? reading.ecg.join(", ") : "No ECG data" %></p>
+                <p class="text-sm text-gray-500">Date: <%= reading.created_at %></p>
+            </li>  
+        <% }) %>
+        
+        <% } %>
+      </ul>
+      
+    </div>
+    </div>
+    
+    
+  </div>
+
+  <footer class="mt-16 text-center text-white">
+    <p class="text-sm mt-4">&copy; 2025 Mediscope. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let allReadings = <%- allReadings %>;
+        console.log("🖥️ Frontend: All Readings:", allReadings);
+
+        if (allReadings.length === 0 || !allReadings[0].ecg || allReadings[0].ecg.length === 0) {
+            console.warn("⚠️ No ECG data available!");
+            return;
+        }
+
+        let latestReading = allReadings[0];  
+        console.log("📊 Latest ECG Data for Graph:", latestReading.ecg);
+
+        if (Array.isArray(latestReading.ecg) && latestReading.ecg.length > 0) {
+            drawECGGraph(latestReading.ecg);
+        } else {
+            console.warn("⚠️ Empty ECG data received.");
+        }
+    });
+
+    function drawECGGraph(ecgData) {
+        console.log("📈 Plotting ECG Graph:", ecgData);
+        let ctx = document.getElementById("ecgChart").getContext("2d");
+
+        new Chart(ctx, {
+            type: "line",
+            data: {
+                labels: ecgData.map((_, i) => i + "s"),
+                datasets: [{
+                    label: "ECG Signal",
+                    data: ecgData,
+                    borderColor: "#16a34a",
+                    borderWidth: 2,
+                    fill: false,
+                    tension: 0.2  
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    x: { title: { display: true, text: "Time (s)" } },
+                    y: { title: { display: true, text: "Voltage (mV)" } }
+                }
+            }
+        });
+    }
+</script>
+
+</body>
+</html>

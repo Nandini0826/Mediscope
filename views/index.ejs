@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <title>Mediscope</title>
+</head>
+<body class="bg-gradient-to-br from-teal-600 to-green-400 min-h-screen font-sans">
+  <header class="bg-white py-6 shadow-md text-center">
+    <h1 class="text-4xl font-bold text-gray-800 tracking-wide">Mediscope</h1>
+  </header>
+
+  <div class="container mx-auto py-16 px-4">
+    <section class="text-center mb-16">
+      <h2 class="text-5xl font-extrabold text-white leading-tight">
+        Stay Informed, Stay Healthy
+      </h2>
+      <p class="text-xl text-gray-200 mt-4">Track your health metrics effortlessly</p>
+    </section>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <!-- Login Section -->
+      <section class="bg-white p-8 rounded-lg shadow-lg md:mx-4 md:p-12">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Login</h3>
+        <form autocomplete="off" id="loginForm" action="/users/loginuser" method="POST">
+          <label class="block mb-2 text-gray-600">Role:</label>
+          <select class="w-full p-3 border border-gray-300 rounded-lg mb-4" id="loginRole" name="role">
+            <option value="user">User</option>
+            <option value="doctor">Doctor</option>
+          </select>
+          <label class="block mb-2 text-gray-600" for="email">Email:</label>
+          <input class="w-full p-3 border border-gray-300 rounded-lg mb-4" type="email" id="loginEmail" name="email" placeholder="Enter your email" />
+          <label class="block mb-2 text-gray-600" for="password">Password:</label>
+          <input class="w-full p-3 border border-gray-300 rounded-lg mb-4" type="password" id="loginPassword" name="password" placeholder="Enter your password" />
+          <p id="loginWarning" class="text-red-500 mb-4 hidden">⚠ Please enter both email and password!</p>
+          <button class="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-lg transition" type="submit">Login</button>
+        </form>
+      </section>
+
+      <!-- Sign Up Section -->
+      <section class="bg-white p-8 rounded-lg shadow-lg md:mx-4 md:p-12">
+        <h3 class="text-2xl font-bold text-gray-800 mb-6">Sign Up</h3>
+        <form autocomplete="off" id="SignupForm" action="/users/registeruser" method="POST">
+          <label class="block mb-2 text-gray-600">Role:</label>
+          <select class="w-full p-3 border border-gray-300 rounded-lg mb-4" id="signupRole" name="role">
+            <option value="user">User</option>
+            <option value="doctor">Doctor</option>
+          </select>
+          <label class="block mb-2 text-gray-600">Name:</label>
+          <input class="w-full p-3 border border-gray-300 rounded-lg mb-4" type="text" id="signupName" name="fullname" placeholder="Enter your name" />
+          <label class="block mb-2 text-gray-600">Email:</label>
+          <input class="w-full p-3 border border-gray-300 rounded-lg mb-4" type="email" id="signupEmail" name="email" placeholder="Enter your email" />
+          <label class="block mb-2 text-gray-600" for="password">Password:</label>
+          <input class="w-full p-3 border border-gray-300 rounded-lg mb-4" type="password" id="signupPassword" name="password" placeholder="Create a password" autocomplete="new-password" />
+          <p id="signupWarning" class="text-red-500 mb-4 hidden">⚠ Please fill all the fields</p>
+          <button class="w-full bg-teal-500 hover:bg-teal-600 text-white py-3 rounded-lg transition" type="submit">Sign Up</button>
+        </form>
+      </section>
+    </div>
+
+    <footer class="mt-16 text-center text-white">
+      <p class="text-lg">Join the Health Revolution: Monitor, Manage, Thrive</p>
+      <p class="text-sm mt-4">&copy; 2025 Mediscope. All rights reserved.</p>
+    </footer>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      // Login Form Logic
+      const loginRole = document.getElementById("loginRole");
+      const loginForm = document.getElementById("loginForm");
+      
+      function updateLoginAction() {
+        loginForm.action = loginRole.value === "doctor" ? "/doctor/logindoctor" : "/users/loginuser";
+        console.log("Login Form Action Set To:", loginForm.action);
+      }
+
+      loginRole.addEventListener("change", updateLoginAction);
+      updateLoginAction(); // Ensure correct action on page load
+
+      loginForm.addEventListener("submit", function (e) {
+        const email = document.getElementById("loginEmail").value.trim();
+        const password = document.getElementById("loginPassword").value.trim();
+        const warningMessage = document.getElementById("loginWarning");
+
+        if (!email || !password) {
+          e.preventDefault();
+          warningMessage.classList.remove("hidden");
+        } else {
+          warningMessage.classList.add("hidden");
+        }
+      });
+
+      // Signup Form Logic
+      const signupRole = document.getElementById("signupRole");
+      const signupForm = document.getElementById("SignupForm");
+
+      function updateSignupAction() {
+        signupForm.action = signupRole.value === "doctor" ? "/doctor/registerdoctor" : "/users/registeruser";
+        console.log("Signup Form Action Set To:", signupForm.action);
+      }
+
+      signupRole.addEventListener("change", updateSignupAction);
+      updateSignupAction(); // Ensure correct action on page load
+
+      signupForm.addEventListener("submit", function (e) {
+        const name = document.getElementById("signupName").value.trim();
+        const email = document.getElementById("signupEmail").value.trim();
+        const password = document.getElementById("signupPassword").value.trim();
+        const warningMessage = document.getElementById("signupWarning");
+
+        if (!name || !email || !password) {
+          e.preventDefault();
+          warningMessage.classList.remove("hidden");
+        } else {
+          warningMessage.classList.add("hidden");
+        }
+      });
+    });
+  </script>
+</body>
+</html>

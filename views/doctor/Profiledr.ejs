@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <title>Mediscope - Profile</title>
+  <script>
+    function toggleEdit() {
+      document.getElementById('profile-view').classList.toggle('hidden');
+      document.getElementById('profile-edit').classList.toggle('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-teal-600 to-green-400 min-h-screen font-sans">
+  
+  <!-- Header -->
+  <header class="bg-white py-6 shadow-md flex justify-between items-center px-8">
+    <a href="/homedr" class="text-gray-800 text-2xl">
+      <i class="ph ph-house">
+        
+      </i>
+    </a>
+    <h1 class="text-4xl font-bold text-gray-800 tracking-wide">Mediscope</h1>
+    <a href="/doctor/logoutdoctor" class="text-gray-700 font-semibold">Logout</a>
+    
+  </header>
+
+  <!-- Profile Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+
+    <!-- Profile Image -->
+    <div class="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
+      <svg class="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+
+    <section class="text-center mb-16">
+      <h2 class="text-5xl font-extrabold text-white leading-tight">Welcome,Dr. <%= doctor.fullname %></h2>
+      <p class="text-xl text-gray-200 mt-4">Manage and view your Patients records</p>
+    </section>   
+
+    
+  <footer class="mt-16 text-center text-white">
+    <p class="text-sm mt-4">&copy; 2025 Mediscope. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

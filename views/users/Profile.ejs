@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <title>Mediscope - Profile</title>
+  <script>
+    function toggleEdit() {
+      document.getElementById('profile-view').classList.toggle('hidden');
+      document.getElementById('profile-edit').classList.toggle('hidden');
+    }
+  </script>
+</head>
+<body class="bg-gradient-to-br from-teal-600 to-green-400 min-h-screen font-sans">
+  
+  <!-- Header -->
+  <header class="bg-white py-6 shadow-md flex justify-between items-center px-8">
+    <a href="/users/home" class="text-gray-800 text-2xl">
+      <i class="ph ph-house">
+        
+      </i>
+    </a>
+    <h1 class="text-4xl font-bold text-gray-800 tracking-wide">Mediscope</h1>
+    <a href="/users/logoutuser" class="text-gray-700 font-semibold">Logout</a>
+    
+  </header>
+
+  <!-- Profile Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+
+    <!-- Profile Image -->
+    <div class="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
+      <svg class="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+
+    <section class="text-center mb-16">
+      <h2 class="text-5xl font-extrabold text-white leading-tight">Welcome, <%= user.fullname %></h2>
+      <p class="text-xl text-gray-200 mt-4">Manage and view your health records</p>
+    </section>
+
+    <!-- Health Profile View Mode -->
+    <section id="profile-view" class="text-white p-8 border-white rounded-lg shadow-lg w-full max-w-lg">
+      <h3 class="text-2xl font-bold mb-6 flex justify-between">
+        Health Profile 
+        <button onclick="toggleEdit()" class="px-3 py-1 rounded-md text-gray-900">Edit</button>
+      </h3>
+      <p class="text-lg mb-4"><span class="font-semibold">Name:</span> <%= user.fullname %></p>
+      <p class="text-lg mb-4"><span class="font-semibold">Email:</span> <%= user.email %></p>
+
+      <h4 class="text-xl font-bold mt-8 mb-4">Medical History</h4>
+      <ul class="list-disc list-inside">
+        <% user.medicalHistory.forEach(function(history) { %>
+          <li><%= history %></li>
+        <% }); %>
+      </ul>
+
+      <h4 class="text-xl font-bold mt-8 mb-4">Current Medications</h4>
+      <ul class="list-disc list-inside">
+        <% user.medications.forEach(med => { %>
+          <li><%= med %></li>
+        <% }); %>
+      </ul>
+    </section>
+
+    <!-- Health Profile Edit Mode (Hidden by Default) -->
+    <section id="profile-edit" class="hidden text-white p-8 border-white rounded-lg shadow-lg w-full max-w-lg">
+      <h3 class="text-2xl font-bold mb-6">Edit Profile</h3>
+      <form action="/users/update-profile" method="POST">
+        <label class="block mb-2">Name:</label>
+        <input type="text" name="username" value="<%= user.username %>" class="w-full p-2 mb-4 text-gray-900 rounded-md">
+        
+        <label class="block mb-2">Email:</label>
+        <input type="email" name="email" value="<%= user.email %>" class="w-full p-2 mb-4 text-gray-900 rounded-md">
+        
+        <label class="block mb-2">Medical History:</label>
+        <textarea name="medicalHistory" class="w-full p-2 mb-4 text-gray-900 rounded-md"><%= user.medicalHistory.join(', ') %></textarea>
+        
+        <label class="block mb-2">Current Medications:</label>
+        <textarea name="medications" class="w-full p-2 mb-4 text-gray-900 rounded-md"><%= user.medications.join(', ') %></textarea>
+        
+        <div class="flex justify-between">
+          <button type="button" onclick="toggleEdit()" class="bg-gray-400 px-3 py-2 rounded-md">Cancel</button>
+          <button type="submit" onclick="toggleEdit()" class="bg-green-500 px-3 py-2 rounded-md">Save</button>
+        </div>
+      </form>
+    </section>
+
+   
+
+  </div>
+  <footer class="mt-16 text-center text-white">
+    <p class="text-sm mt-4">&copy; 2025 Mediscope. All rights reserved.</p>
+  </footer>
+
+</body>
+</html>

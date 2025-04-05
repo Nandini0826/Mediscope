@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>Mediscope - Home</title>
+</head>
+<body class="bg-gradient-to-br from-teal-600 to-green-400 min-h-screen font-sans">
+  
+  <!-- Header -->
+  <header class="bg-white py-6 shadow-md flex justify-between items-center px-8">
+    <a href="/profile" class="text-gray-800 text-2xl">
+      <i class="ph ph-user"></i>
+    </a>
+    <h1 class="text-4xl font-bold text-gray-800 tracking-wide">Mediscope</h1>
+    <a href="/users/logoutuser" class="text-gray-700 font-semibold">Logout</a>
+  </header>
+  <!-- Profile Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+
+    <!-- Profile Image -->
+    <div class="bg-gray-300 rounded-full h-24 w-24 flex items-center justify-center">
+      <svg class="w-16 h-16 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+        <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
+      </svg>
+    </div>
+
+    <section class="text-center mb-16">
+      <h2 class="text-5xl font-extrabold text-white leading-tight">Welcome, <%= user.fullname %></h2>
+      <p class="text-xl text-gray-200 mt-4">Manage and view your health records</p>
+    </section>
+
+  <!-- Main Section -->
+  <div class="container mx-auto py-12 px-4 flex flex-col items-center">
+    
+    <h2 class="text-5xl font-extrabold text-white leading-tight">Health Dashboard</h2>
+    
+    <!-- Latest Readings -->
+    <div class="mt-8 w-full max-w-lg">
+      <div class="bg-white p-6 rounded-lg shadow-lg mb-6">
+        <h3 class="text-gray-800 text-center font-semibold mb-2">Latest Readings</h3>
+        <p class="text-lg font-medium text-gray-700">Heart Rate: <span class="text-green-600">65 bpm</span></p>
+        <p class="text-lg font-medium text-gray-700">Oxygen Saturation: <span class="text-green-600">92%</span></p>
+        <p class="text-lg font-medium text-gray-700">Temperature: <span class="text-green-600">35&deg;C</span></p>
+        <p class="text-sm text-gray-500 mt-2">Recorded on: 2025-03-30 14:45</p>
+      </div>
+    </div>
+
+     <!-- ECG Report Graph -->
+     <div class="mt-8 w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
+        <h3 class="text-gray-800 text-center font-semibold mb-4">Latest ECG Report</h3>
+        <canvas id="ecgChart" width="400" height="200"></canvas>
+      </div>
+      <br>
+    
+    <!-- Previous Readings -->
+    <div class="w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
+      <h3 class="text-gray-800 text-center font-semibold mb-4">Previous Readings</h3>
+      <ul class="text-gray-700">
+        <li class="border-b py-2">
+          <p>Heart Rate: <span class="text-green-600">75 bpm</span></p>
+          <p>Oxygen: <span class="text-green-600">97%</span></p>
+          <p>Temperature: <span class="text-green-600">36.7&deg;C</span></p>
+          <p class="text-sm text-gray-500">Date: 2025-03-29 18:30</p>
+        </li>
+        <li class="border-b py-2">
+          <p>Heart Rate: <span class="text-green-600">74 bpm</span></p>
+          <p>Oxygen: <span class="text-green-600">96%</span></p>
+          <p>Temperature: <span class="text-green-600">36.6&deg;C</span></p>
+          <p class="text-sm text-gray-500">Date: 2025-03-28 10:15</p>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Past ECG Reports -->
+    <div class="mt-8 w-full max-w-lg bg-white p-6 rounded-lg shadow-lg">
+      <h3 class="text-gray-800 text-center font-semibold mb-4">Past ECG Reports</h3>
+      <ul class="text-gray-700">
+        <li class="border-b py-4">
+          <h4 class="font-semibold">ECG Report - 2025-03-29</h4>
+          <canvas id="ecgChart1" width="400" height="200"></canvas>
+        </li>
+        <li class="border-b py-4">
+          <h4 class="font-semibold">ECG Report - 2025-03-28</h4>
+          <canvas id="ecgChart2" width="400" height="200"></canvas>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="mt-16 text-center text-white">
+    <p class="text-sm mt-4">&copy; 2025 Mediscope. All rights reserved.</p>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      function createECGChart(canvasId, data) {
+        var ctx = document.getElementById(canvasId).getContext("2d");
+        new Chart(ctx, {
+          type: "line",
+          data: {
+            labels: ["0ms", "50s", "100ms", "200ms", "250s", "300ms", "350ms", "400s"],
+            datasets: [{
+              label: "ECG Signal",
+              data: data,
+              borderColor: "#16a34a",
+              borderWidth: 2,
+              fill: false,
+            }],
+          },
+          options: {
+            responsive: true,
+            scales: {
+              x: { title: { display: true, text: "Time" } },
+              y: { title: { display: true, text: "Voltage (mV)" } },
+            },
+          },
+        });
+      }
+
+      createECGChart("ecgChart", [512, 515, 530, 600, 800, 500, 450, 480, 512]);
+      createECGChart("ecgChart1", [520, 530, 601, 452, 390, 480, 500, 600, 412, 520]);
+      createECGChart("ecgChart2", [3, 4, 5, 2, 6, 7, 8, 5, 6, 3]);
+    });
+  </script>
+</body>
+</html>
