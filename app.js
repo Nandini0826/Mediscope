@@ -26,8 +26,8 @@ app.use(
 );
 app.use(flash());
 
+app.use("/", index);
 app.use("/users", userRouter);
 app.use("/doctor", doctorRouter);
-app.use("/", index);
 
 app.listen(3000);

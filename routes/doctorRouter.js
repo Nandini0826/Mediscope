@@ -10,6 +10,8 @@ router.get("/test", (req, res) => {
 
 router.get("/Profiledr", isLoggedin, async (req, res) => {
     try {
+        let success = req.flash("success");
+        let error = req.flash("error");
         console.log("Doctor Profile route hit");
 
         console.log("User from middleware:", req.user); 
@@ -27,7 +29,7 @@ router.get("/Profiledr", isLoggedin, async (req, res) => {
             return res.status(404).send("Doctor not found");
         }
 
-        res.render("doctor/Profiledr", { doctor: doctorData }); 
+        res.render("doctor/Profiledr", { doctor: doctorData, success, error }); 
     } catch (error) {
         console.error("Error fetching doctor profile:", error);
         res.status(500).send("Server Error");
@@ -36,6 +38,6 @@ router.get("/Profiledr", isLoggedin, async (req, res) => {
 
 router.post("/registerdoctor", registerdoctor);
 router.post("/logindoctor", logindoctor);
-router.post("/logoutdoctor", logoutdoctor);
+router.get("/logoutdoctor", logoutdoctor);
 
 module.exports = router;

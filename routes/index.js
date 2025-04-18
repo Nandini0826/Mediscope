@@ -6,13 +6,10 @@ const {registeruser, loginuser, logout, deleteuser} = require("../controllers/us
 
 router.get("/", function(req, res)
 {
-    res.render("index");
+    let success = req.flash("success");
+    let error = req.flash("error");
+    res.render("index", {success, error});
 });
-
-
-
-
-
 
 
 module.exports = router;

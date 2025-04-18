@@ -1,6 +1,5 @@
 const doctorModel = require("../models/doctor-model");
 const bcrypt = require("bcrypt");
-const flash = require("connect-flash");
 const jwt = require("jsonwebtoken");
 const { generateToken } = require("../utils/generatetoken");
 
@@ -9,8 +8,8 @@ module.exports.registerdoctor = async function (req, res) {
   let { fullname, email, password } = req.body;
   let doctor = await doctorModel.findOne({ email: email });
   if (doctor) {
-    return res.redirect("/");
     req.flash("error", "User already exists");
+    return res.redirect("/");
   }
 
   bcrypt.genSalt(10, function (err, salt) {
@@ -26,7 +25,7 @@ module.exports.registerdoctor = async function (req, res) {
         let token = generateToken(doctor);
         res.cookie("token", token);
         req.flash("success", "Doctor registered successfully");
-        return res.redirect("doctor/Profiledr");
+        return res.redirect("/doctor/Profiledr");
       }
     });
   });
@@ -48,7 +47,8 @@ module.exports.logindoctor = async function (req, res) {
     if (result) {
       let token = generateToken(doctor);
       res.cookie("token", token);
-      res.redirect("doctor/Profiledr");
+      req.flash("success", "Login Successful");
+      res.redirect("Profiledr");
     } else {
       req.flash("error", "Email or password incorrect");
       return res.redirect("/");
@@ -58,5 +58,6 @@ module.exports.logindoctor = async function (req, res) {
 
 module.exports.logoutdoctor = async function (req, res) {
     res.cookie("token", "");
+    req.flash("success", "Logged Out");
     res.redirect("/");
   };
